@@ -10,8 +10,8 @@
 
     var animatedScrollTo = function (element, to, duration, callback) {
         var start = element.scrollTop,
-        change = to - start,
-        animationStart = +new Date();
+            change = to - start,
+            animationStart = +new Date();
         var animating = true;
         var lastpos = null;
 
@@ -23,23 +23,33 @@
             var now = +new Date();
             var val = Math.floor(easeInOutQuad(now - animationStart, start, change, duration));
             if (lastpos) {
-                if (lastpos === element.scrollTop) {
+                // if (lastpos === element.scrollTop) {
                     lastpos = val;
                     element.scrollTop = val;
-                } else {
-                    animating = false;
-                }
+                // } else {
+                //     animating = false;
+                // }
             } else {
                 lastpos = val;
                 element.scrollTop = val;
             }
-            if (now > animationStart + duration) {
+            if (now > animationStart + duration || isBottomPage(element)) {
                 element.scrollTop = to;
                 animating = false;
                 if (callback) { callback(); }
             }
         };
+
         requestAnimFrame(animateScroll);
+
+        var isBottomPage = function(element){
+            var scrollTop = element.scrollTop;
+            var scrolledToBottom = (scrollTop + window.innerHeight) >= element.scrollHeight;
+
+            if(scrolledToBottom){
+                return true;
+            }
+        }
     };
 
     if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
